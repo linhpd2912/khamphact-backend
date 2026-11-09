@@ -16,8 +16,8 @@ public class CorsConfig {
     CorsConfiguration config = new CorsConfiguration();
 
     config.setAllowedOrigins(
-        // List.of("http://localhost:5173"));
-        List.of("https://khamphacantho.netlify.app/"));
+        List.of("http://localhost:5173"));
+        // List.of("https://khamphacantho.netlify.app/"));
 
     config.setAllowedMethods(
         List.of(
