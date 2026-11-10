@@ -15,7 +15,7 @@ import anuong.cantho.backend.entity.quanan.DanhMuc;
 @Repository
 public interface DanhMucRepository extends JpaRepository<DanhMuc, Long> {
 
-  // Kiểm tra slug đã tồn tại hay chưa
+    // Kiểm tra slug đã tồn tại hay chưa
     boolean existsByDuongDanSeo(String duongDanSeo);
 
     // Kiểm tra slug trùng với bản ghi khác, bỏ qua ID hiện tại
@@ -32,18 +32,17 @@ public interface DanhMucRepository extends JpaRepository<DanhMuc, Long> {
 
     // Tìm kiếm theo tên, mô tả hoặc slug
     @Query("""
-        SELECT d
-        FROM DanhMuc d
-        WHERE
-            LOWER(d.tenDanhMuc) LIKE LOWER(CONCAT('%', :keyword, '%'))
-            OR LOWER(COALESCE(d.moTa, ''))
-                LIKE LOWER(CONCAT('%', :keyword, '%'))
-            OR LOWER(COALESCE(d.duongDanSeo, ''))
-                LIKE LOWER(CONCAT('%', :keyword, '%'))
-        """)
+            SELECT d
+            FROM DanhMuc d
+            WHERE
+                LOWER(d.tenDanhMuc) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                OR LOWER(COALESCE(d.moTa, ''))
+                    LIKE LOWER(CONCAT('%', :keyword, '%'))
+                OR LOWER(COALESCE(d.duongDanSeo, ''))
+                    LIKE LOWER(CONCAT('%', :keyword, '%'))
+            """)
     Page<DanhMuc> timKiem(
-        @Param("keyword") String keyword,
-        Pageable pageable
-    );
+            @Param("keyword") String keyword,
+            Pageable pageable);
 
 }
