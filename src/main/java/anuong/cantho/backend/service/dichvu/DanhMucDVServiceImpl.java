@@ -269,7 +269,7 @@ public class DanhMucDVServiceImpl implements DanhMucDichVuService {
 
         // Kiểm tra khóa ngoại trước khi xóa
         boolean dangDuocSuDung =
-            dichVuDanhMucRepository.existsByDanhMuc_Id(id);
+            dichVuDanhMucRepository.existsByDanhMucDichVu_Id(id);
 
         if (dangDuocSuDung) {
             throw new ResponseStatusException(
