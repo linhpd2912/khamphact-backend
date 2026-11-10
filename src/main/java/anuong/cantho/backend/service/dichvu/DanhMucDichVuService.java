@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import anuong.cantho.backend.dto.dichvu.danhmucdichvu.CapNhatGiaTriDanhMucDVDTO;
+import anuong.cantho.backend.dto.dichvu.danhmucdichvu.DanhMucDichVuRequestDTO;
 import anuong.cantho.backend.dto.dichvu.danhmucdichvu.DanhMucDichVuResponseDTO;
 
 public interface DanhMucDichVuService {
@@ -14,7 +15,7 @@ public interface DanhMucDichVuService {
   Page<DanhMucDichVuResponseDTO> getAll(Pageable pageable);
 
   // Danh sách đầy đủ
-  Page<DanhMucDichVuResponseDTO> getAll();
+  List<DanhMucDichVuResponseDTO> getAll();
 
   // Chi tiết theo ID
   DanhMucDichVuResponseDTO getById(Long id);
@@ -35,10 +36,10 @@ public interface DanhMucDichVuService {
   );
 
   // Thêm mới
-  DanhMucDichVuResponseDTO create(DanhMucDichVuResponseDTO request);
+  DanhMucDichVuResponseDTO create(DanhMucDichVuRequestDTO request);
 
   // Cập nhật
-  DanhMucDichVuResponseDTO update(Long id, DanhMucDichVuResponseDTO request);
+  DanhMucDichVuResponseDTO update(Long id, DanhMucDichVuRequestDTO request);
 
   // Cập nhật trạng thái hoạt động
   DanhMucDichVuResponseDTO capNhatTrangThai(
