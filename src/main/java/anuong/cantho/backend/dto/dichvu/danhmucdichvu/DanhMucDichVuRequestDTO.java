@@ -1,4 +1,4 @@
-package anuong.cantho.backend.dto.dichvu;
+package anuong.cantho.backend.dto.dichvu.danhmucdichvu;
 
 import jakarta.validation.constraints.*;
 import lombok.*;

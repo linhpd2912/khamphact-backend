@@ -23,14 +23,14 @@ public class GioMoCua {
   private Long id;
 
   // Liên kết với quán ăn
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quan_an_id")
-    private QuanAn quanAn;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "quan_an_id")
+  private QuanAn quanAn;
 
-    // Liên kết với dịch vụ
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dich_vu_id")
-    private DichVu dichVu;
+  // Liên kết với dịch vụ
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "dich_vu_id")
+  private DichVu dichVu;
 
   @NotNull(message = "Vui lòng chọn thứ trong tuần")
   @Min(value = 1, message = "Thứ phải nằm trong khoảng 1 đến 7")

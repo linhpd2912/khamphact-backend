@@ -1,4 +1,5 @@
 package anuong.cantho.backend.dto.quanan.giomocua;
+
 import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
@@ -9,10 +10,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor 
+@AllArgsConstructor
 public class GioMoCuaResponseDTO {
 
-   private Long id;
+    private Long id;
 
     private Long quanAnId;
 

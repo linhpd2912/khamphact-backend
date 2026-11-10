@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import anuong.cantho.backend.dto.dichvu.CapNhatGiaTriDanhMucDVDTO;
-import anuong.cantho.backend.dto.dichvu.DanhMucDichVuResponseDTO;
+import anuong.cantho.backend.dto.dichvu.danhmucdichvu.CapNhatGiaTriDanhMucDVDTO;
+import anuong.cantho.backend.dto.dichvu.danhmucdichvu.DanhMucDichVuResponseDTO;
 
 public interface DanhMucDichVuService {
 
