@@ -1,26 +1,20 @@
 package anuong.cantho.backend.entity.quanan;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import anuong.cantho.backend.entity.dichvu.DichVu;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
 @Entity
 @Table(name = "hinh_anh_quan", indexes = {
-    @Index(name = "idx_hinh_anh_quan_thu_tu", columnList = "quan_an_id, thu_tu")
+    @Index(name = "idx_hinh_anh_quan_thu_tu", columnList = "quan_an_id, thu_tu"),
+    @Index(name = "idx_hinh_anh_dich_vu_thu_tu", columnList = "dich_vu_id, thu_tu")
+}, check = {
+    @CheckConstraint(name = "chk_hinh_anh_quan_doi_tuong", constraint = """
+            (quan_an_id IS NOT NULL AND dich_vu_id IS NULL)
+            OR
+            (quan_an_id IS NULL AND dich_vu_id IS NOT NULL)
+        """)
 })
 @NoArgsConstructor
 @Getter
@@ -31,10 +25,15 @@ public class HinhAnhQuan {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotNull(message = "Quán ăn không được để trống")
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "quan_an_id", nullable = false)
-  private QuanAn quanAn;
+     // Liên kết quán ăn
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "quan_an_id")
+    private QuanAn quanAn;
+
+    // Liên kết dịch vụ
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dich_vu_id")
+    private DichVu dichVu;
 
   @NotBlank(message = "URL ảnh không được để trống")
   @Size(max = 2048)
