@@ -30,9 +30,9 @@ public interface DichVuRepository extends JpaRepository<DichVu, Long>{
             :keyword IS NULL
             OR LOWER(d.tenDichVu)
                 LIKE LOWER(CONCAT('%', :keyword, '%'))
-            OR LOWER(COALESCE(q.diaChi, ''))
+            OR LOWER(COALESCE(d.diaChi, ''))
                   LIKE LOWER(CONCAT('%', :keyword, '%'))
-              OR LOWER(COALESCE(q.moTaNgan, ''))
+              OR LOWER(COALESCE(d.moTaNgan, ''))
                   LIKE LOWER(CONCAT('%', :keyword, '%'))
         )
         AND (:tinhThanhId IS NULL OR d.tinhThanh.id = :tinhThanhId)
