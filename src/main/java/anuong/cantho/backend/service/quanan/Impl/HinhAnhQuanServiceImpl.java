@@ -17,9 +17,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import anuong.cantho.backend.dto.dichvu.dichvuhinhanh.DichVuHinhAnhResponseDTO;
 import anuong.cantho.backend.dto.quanan.hinhanhquan.HinhAnhQuanResponseDTO;
+import anuong.cantho.backend.entity.dichvu.DichVu;
 import anuong.cantho.backend.entity.quanan.HinhAnhQuan;
 import anuong.cantho.backend.entity.quanan.QuanAn;
+import anuong.cantho.backend.repository.dichvu.DichVuRepository;
 import anuong.cantho.backend.repository.quanan.HinhAnhQuanRepository;
 import anuong.cantho.backend.repository.quanan.QuanAnRepository;
 import anuong.cantho.backend.service.quanan.HinhAnhQuanService;
@@ -27,10 +30,11 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class HinhAnhQuanServiceImpl implements HinhAnhQuanService{
+public class HinhAnhQuanServiceImpl implements HinhAnhQuanService {
 
   private final HinhAnhQuanRepository hinhAnhQuanRepository;
   private final QuanAnRepository quanAnRepository;
+  private final DichVuRepository dichVuRepository;
 
   @Value("${app.upload.dir:uploads}")
   private String uploadDir;
@@ -49,7 +53,7 @@ public class HinhAnhQuanServiceImpl implements HinhAnhQuanService{
   // 1. LẤY TẤT CẢ HÌNH ẢNH
   // =========================
   @Override
-  @Transactional (readOnly = true)
+  @Transactional(readOnly = true)
   public List<HinhAnhQuanResponseDTO> layTatCa() {
 
     return hinhAnhQuanRepository
@@ -57,6 +61,17 @@ public class HinhAnhQuanServiceImpl implements HinhAnhQuanService{
         .stream()
         .map(HinhAnhQuanResponseDTO::fromEntity)
         .toList();
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<DichVuHinhAnhResponseDTO> layTatCaDichVu() {
+    return hinhAnhQuanRepository
+        .findAllByOrderByThuTuAscIdAsc()
+        .stream()
+        .map(DichVuHinhAnhResponseDTO::fromEntity)
+        .toList();
+
   }
 
   // =========================
@@ -82,6 +97,29 @@ public class HinhAnhQuanServiceImpl implements HinhAnhQuanService{
         .findByQuanAn_IdOrderByThuTuAscIdAsc(quanAnId)
         .stream()
         .map(HinhAnhQuanResponseDTO::fromEntity)
+        .toList();
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<DichVuHinhAnhResponseDTO> layTheoDichVu(Long dichVuId) {
+
+    if (dichVuId == null || dichVuId <= 0) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "ID quán ăn không hợp lệ");
+    }
+
+    if (!dichVuRepository.existsById(dichVuId)) {
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND,
+          "Không tìm thấy quán ăn");
+    }
+
+    return hinhAnhQuanRepository
+        .findByQuanAn_IdOrderByThuTuAscIdAsc(dichVuId)
+        .stream()
+        .map(DichVuHinhAnhResponseDTO::fromEntity)
         .toList();
   }
 
@@ -220,6 +258,138 @@ public class HinhAnhQuanServiceImpl implements HinhAnhQuanService{
     }
   }
 
+  @Override
+  @Transactional
+  public List<DichVuHinhAnhResponseDTO> taiLenAnhDichVu(
+      Long dichVuId,
+      MultipartFile[] files,
+      String chuThich) {
+
+    if (dichVuId == null || dichVuId <= 0) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "ID quán ăn không hợp lệ");
+    }
+
+    if (files == null || files.length == 0) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Vui lòng chọn ít nhất một hình ảnh");
+    }
+
+    // Kiểm tra quán có tồn tại
+    DichVu dichVu = dichVuRepository.findById(dichVuId)
+        .orElseThrow(() -> new ResponseStatusException(
+            HttpStatus.NOT_FOUND,
+            "Không tìm thấy quán ăn"));
+
+    Path thuMucLuuAnh = layThuMucLuuAnh();
+
+    List<HinhAnhQuan> danhSachDaLuu = new ArrayList<>();
+    List<Path> cacFileDaTao = new ArrayList<>();
+
+    try {
+      Files.createDirectories(thuMucLuuAnh);
+
+      List<HinhAnhQuan> anhHienCo = hinhAnhQuanRepository
+          .findByDichVu_IdOrderByThuTuAscIdAsc(dichVuId);
+
+      int thuTuBatDau = anhHienCo.stream()
+          .map(HinhAnhQuan::getThuTu)
+          .filter(thuTu -> thuTu != null)
+          .mapToInt(Integer::intValue)
+          .max()
+          .orElse(-1) + 1;
+
+      for (int i = 0; i < files.length; i++) {
+
+        MultipartFile file = files[i];
+
+        if (file == null || file.isEmpty()) {
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST,
+              "Có hình ảnh rỗng trong danh sách tải lên");
+        }
+
+        if (file.getSize() > DUNG_LUONG_TOI_DA) {
+          throw new ResponseStatusException(
+              HttpStatus.CONTENT_TOO_LARGE,
+              "Mỗi hình ảnh không được vượt quá 10 MB");
+        }
+
+        String contentType = file.getContentType();
+
+        String extension = DINH_DANG_ANH.get(contentType);
+
+        if (extension == null) {
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST,
+              "Chỉ chấp nhận ảnh JPEG, PNG, WEBP hoặc GIF");
+        }
+
+        // Tên file ngẫu nhiên, không dùng trực tiếp tên file gốc
+        String tenFile = UUID.randomUUID() + extension;
+
+        Path duongDanFile = thuMucLuuAnh.resolve(tenFile).normalize();
+
+        // Đảm bảo file luôn nằm trong thư mục được phép
+        if (!duongDanFile.startsWith(thuMucLuuAnh)) {
+          throw new ResponseStatusException(
+              HttpStatus.BAD_REQUEST,
+              "Đường dẫn file không hợp lệ");
+        }
+
+        file.transferTo(duongDanFile);
+        cacFileDaTao.add(duongDanFile);
+
+        HinhAnhQuan hinhAnh = new HinhAnhQuan();
+
+        hinhAnh.setDichVu(dichVu);
+
+        // Lưu URL tương đối, không lưu đường dẫn tuyệt đối trên máy
+        hinhAnh.setUrlAnh(
+            "/uploads/" + THU_MUC_ANH + "/" + tenFile);
+
+        hinhAnh.setLoaiAnh(contentType);
+
+        hinhAnh.setChuThich(
+            StringUtils.hasText(chuThich)
+                ? chuThich.trim()
+                : null);
+
+        hinhAnh.setAnhDaiDien(false);
+        hinhAnh.setThuTu(thuTuBatDau + i);
+
+        danhSachDaLuu.add(hinhAnh);
+      }
+
+      List<HinhAnhQuan> ketQua = hinhAnhQuanRepository.saveAll(danhSachDaLuu);
+
+      return ketQua.stream()
+          .map(DichVuHinhAnhResponseDTO::fromEntity)
+          .toList();
+
+    } catch (ResponseStatusException e) {
+
+      xoaFileDaTao(cacFileDaTao);
+      throw e;
+
+    } catch (IOException e) {
+
+      xoaFileDaTao(cacFileDaTao);
+
+      throw new ResponseStatusException(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          "Không thể lưu hình ảnh lên máy chủ",
+          e);
+
+    } catch (RuntimeException e) {
+
+      xoaFileDaTao(cacFileDaTao);
+      throw e;
+    }
+  }
+
   // =========================
   // 4. CHỌN ẢNH ĐẠI DIỆN
   // =========================
@@ -252,6 +422,35 @@ public class HinhAnhQuanServiceImpl implements HinhAnhQuanService{
     return HinhAnhQuanResponseDTO.fromEntity(ketQua);
   }
 
+  @Override
+  @Transactional
+  public DichVuHinhAnhResponseDTO datAnhDaiDienDichVu(Long id) {
+
+    HinhAnhQuan anhDuocChon = hinhAnhQuanRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(
+            HttpStatus.NOT_FOUND,
+            "Không tìm thấy hình ảnh"));
+
+    Long dichVuId = anhDuocChon.getDichVu().getId();
+
+    // Bỏ ảnh đại diện cũ của cùng quán
+    List<HinhAnhQuan> anhDaiDienCu = hinhAnhQuanRepository
+        .findByDichVu_IdAndAnhDaiDienTrue(dichVuId);
+
+    for (HinhAnhQuan anh : anhDaiDienCu) {
+      anh.setAnhDaiDien(false);
+    }
+
+    hinhAnhQuanRepository.saveAll(anhDaiDienCu);
+
+    // Đặt ảnh được chọn làm ảnh đại diện
+    anhDuocChon.setAnhDaiDien(true);
+
+    HinhAnhQuan ketQua = hinhAnhQuanRepository.save(anhDuocChon);
+
+    return DichVuHinhAnhResponseDTO.fromEntity(ketQua);
+  }
+
   // =========================
   // 5. CẬP NHẬT THỨ TỰ ẢNH
   // =========================
@@ -279,12 +478,60 @@ public class HinhAnhQuanServiceImpl implements HinhAnhQuanService{
     return HinhAnhQuanResponseDTO.fromEntity(ketQua);
   }
 
+  @Override
+  @Transactional
+  public DichVuHinhAnhResponseDTO capNhatThuTuDichVu(
+      Long id,
+      Integer thuTu) {
+
+    if (thuTu == null || thuTu < 0) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Thứ tự ảnh phải lớn hơn hoặc bằng 0");
+    }
+
+    HinhAnhQuan hinhAnh = hinhAnhQuanRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(
+            HttpStatus.NOT_FOUND,
+            "Không tìm thấy hình ảnh"));
+
+    hinhAnh.setThuTu(thuTu);
+
+    HinhAnhQuan ketQua = hinhAnhQuanRepository.save(hinhAnh);
+
+    return DichVuHinhAnhResponseDTO.fromEntity(ketQua);
+  }
+
   // =========================
   // 6. XÓA HÌNH ẢNH
   // =========================
   @Override
   @Transactional
   public void xoa(Long id) {
+
+    HinhAnhQuan hinhAnh = hinhAnhQuanRepository.findById(id)
+        .orElseThrow(() -> new ResponseStatusException(
+            HttpStatus.NOT_FOUND,
+            "Không tìm thấy hình ảnh"));
+
+    Path fileCanXoa = layDuongDanFileTuUrl(
+        hinhAnh.getUrlAnh());
+
+    // Xóa bản ghi trong database
+    hinhAnhQuanRepository.delete(hinhAnh);
+
+    /*
+     * Sau khi transaction commit thành công, thử xóa file.
+     * Nếu không xóa được file, bản ghi DB vẫn đã bị xóa.
+     */
+    if (fileCanXoa != null) {
+      xoaFileDaTao(List.of(fileCanXoa));
+    }
+  }
+
+  @Override
+  @Transactional
+  public void xoaDichVuHinhAnh(Long id) {
 
     HinhAnhQuan hinhAnh = hinhAnhQuanRepository.findById(id)
         .orElseThrow(() -> new ResponseStatusException(

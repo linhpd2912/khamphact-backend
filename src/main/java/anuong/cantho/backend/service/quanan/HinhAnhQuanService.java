@@ -4,30 +4,54 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import anuong.cantho.backend.dto.dichvu.dichvuhinhanh.DichVuHinhAnhResponseDTO;
 import anuong.cantho.backend.dto.quanan.hinhanhquan.HinhAnhQuanResponseDTO;
 
 public interface HinhAnhQuanService {
 
-  // Lấy tất cả hình ảnh
-  List<HinhAnhQuanResponseDTO> layTatCa();
+    // Quan
 
-  // Lấy hình ảnh theo quán ăn
-  List<HinhAnhQuanResponseDTO> layTheoQuanAn(Long quanAnId);
+    // Lấy tất cả hình ảnh
+    List<HinhAnhQuanResponseDTO> layTatCa();
 
-  // Tải lên một hoặc nhiều hình ảnh
-  List<HinhAnhQuanResponseDTO> taiLen(
-      Long quanAnId,
-      MultipartFile[] files,
-      String chuThich);
+    // Lấy hình ảnh theo quán ăn
+    List<HinhAnhQuanResponseDTO> layTheoQuanAn(Long quanAnId);
 
-  // Chọn ảnh đại diện
-  HinhAnhQuanResponseDTO datAnhDaiDien(Long id);
+    // Tải lên một hoặc nhiều hình ảnh
+    List<HinhAnhQuanResponseDTO> taiLen(
+            Long quanAnId,
+            MultipartFile[] files,
+            String chuThich);
 
-  // Cập nhật thứ tự ảnh
-  HinhAnhQuanResponseDTO capNhatThuTu(
-      Long id,
-      Integer thuTu);
+    // Chọn ảnh đại diện
+    HinhAnhQuanResponseDTO datAnhDaiDien(Long id);
 
-  // Xóa ảnh
-  void xoa(Long id);
+    // Cập nhật thứ tự ảnh
+    HinhAnhQuanResponseDTO capNhatThuTu(
+            Long id,
+            Integer thuTu);
+
+    // Xóa ảnh
+    void xoa(Long id);
+
+    // Dich Vu
+
+    List<DichVuHinhAnhResponseDTO> layTatCaDichVu();
+
+    List<DichVuHinhAnhResponseDTO> layTheoDichVu(Long dichVuId);
+
+    List<DichVuHinhAnhResponseDTO> taiLenAnhDichVu(
+            Long dichVuId,
+            MultipartFile[] files,
+            String chuThich
+
+    );
+
+    DichVuHinhAnhResponseDTO datAnhDaiDienDichVu(Long id);
+
+    DichVuHinhAnhResponseDTO capNhatThuTuDichVu(
+            Long id, Integer thuTu);
+
+    void xoaDichVuHinhAnh(Long id);
+
 }

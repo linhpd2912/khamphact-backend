@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import anuong.cantho.backend.dto.dichvu.dichvuhinhanh.DichVuHinhAnhResponseDTO;
 import anuong.cantho.backend.dto.quanan.hinhanhquan.HinhAnhQuanResponseDTO;
 import anuong.cantho.backend.service.quanan.HinhAnhQuanService;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,21 @@ public class HinhAnhQuanController {
     return ResponseEntity.ok(danhSach);
   }
 
+  @GetMapping("/dich-vu")
+  public ResponseEntity<List<DichVuHinhAnhResponseDTO>> layDanhSachDichVu(
+      @RequestParam(required = false) Long dichVuId) {
+
+    List<DichVuHinhAnhResponseDTO> danhSach;
+
+    if (dichVuId != null) {
+      danhSach = hinhAnhQuanService.layTheoDichVu(dichVuId);
+    } else {
+      danhSach = hinhAnhQuanService.layTatCaDichVu();
+    }
+
+    return ResponseEntity.ok(danhSach);
+  }
+
   // ======================================
   // 2. TẢI LÊN MỘT HOẶC NHIỀU ẢNH
   // ======================================
@@ -71,6 +87,22 @@ public class HinhAnhQuanController {
         .body(ketQua);
   }
 
+  @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<List<DichVuHinhAnhResponseDTO>> taiLenAnhDichVu(
+      @RequestParam Long dichVuId,
+      @RequestParam("files") MultipartFile[] files,
+      @RequestParam(required = false) String chuThich) {
+
+    List<DichVuHinhAnhResponseDTO> ketQua = hinhAnhQuanService.taiLenAnhDichVu(
+        dichVuId,
+        files,
+        chuThich);
+
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(ketQua);
+  }
+
   // ======================================
   // 3. CHỌN ẢNH ĐẠI DIỆN
   // ======================================
@@ -80,6 +112,15 @@ public class HinhAnhQuanController {
       @PathVariable Long id) {
 
     HinhAnhQuanResponseDTO ketQua = hinhAnhQuanService.datAnhDaiDien(id);
+
+    return ResponseEntity.ok(ketQua);
+  }
+
+  @PatchMapping("/dich-vu/{id}/anh-dai-dien")
+  public ResponseEntity<DichVuHinhAnhResponseDTO> datAnhDaiDienDichVu(
+      @PathVariable Long id) {
+
+    DichVuHinhAnhResponseDTO ketQua = hinhAnhQuanService.datAnhDaiDienDichVu(id);
 
     return ResponseEntity.ok(ketQua);
   }
@@ -101,6 +142,18 @@ public class HinhAnhQuanController {
     return ResponseEntity.ok(ketQua);
   }
 
+  @PatchMapping("/dich-vu/{id}/thu-tu")
+  public ResponseEntity<DichVuHinhAnhResponseDTO> capNhatThuTuDichVu(
+      @PathVariable Long id,
+      @RequestBody Map<String, Integer> request) {
+
+    Integer thuTu = request.get("thuTu");
+
+    DichVuHinhAnhResponseDTO ketQua = hinhAnhQuanService.capNhatThuTuDichVu(id, thuTu);
+
+    return ResponseEntity.ok(ketQua);
+  }
+
   // ======================================
   // 5. XÓA HÌNH ẢNH
   // ======================================
@@ -109,6 +162,14 @@ public class HinhAnhQuanController {
   public ResponseEntity<Void> xoa(@PathVariable Long id) {
 
     hinhAnhQuanService.xoa(id);
+
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/dich-vu/{id}")
+  public ResponseEntity<Void> xoaDichVu(@PathVariable Long id) {
+
+    hinhAnhQuanService.xoaDichVuHinhAnh(id);
 
     return ResponseEntity.noContent().build();
   }
