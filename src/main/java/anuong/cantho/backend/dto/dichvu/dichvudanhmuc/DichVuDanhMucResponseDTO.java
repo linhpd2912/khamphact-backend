@@ -12,6 +12,6 @@ public class DichVuDanhMucResponseDTO {
 
   private Long dichVuId;
 
-  private Long danhMucId;
+  private Long danhMucDichVuId;
 
 }

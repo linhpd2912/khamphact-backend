@@ -13,6 +13,6 @@ public class DichVuDanhMucRequestDTO {
   private Long dichVuId;
 
   @NotNull (message = "Danh mục không được để trống")
-  private Long danhMucId;
+  private Long danhMucDichVuId;
 
 }
