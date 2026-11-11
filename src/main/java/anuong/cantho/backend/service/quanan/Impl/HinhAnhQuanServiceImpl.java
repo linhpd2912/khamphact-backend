@@ -67,11 +67,10 @@ public class HinhAnhQuanServiceImpl implements HinhAnhQuanService {
   @Transactional(readOnly = true)
   public List<DichVuHinhAnhResponseDTO> layTatCaDichVu() {
     return hinhAnhQuanRepository
-        .findAllByOrderByThuTuAscIdAsc()
+        .findAllByDichVuIsNotNullOrderByThuTuAscIdAsc()
         .stream()
         .map(DichVuHinhAnhResponseDTO::fromEntity)
         .toList();
-
   }
 
   // =========================
@@ -107,17 +106,17 @@ public class HinhAnhQuanServiceImpl implements HinhAnhQuanService {
     if (dichVuId == null || dichVuId <= 0) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
-          "ID quán ăn không hợp lệ");
+          "ID dịch vụ không hợp lệ");
     }
 
     if (!dichVuRepository.existsById(dichVuId)) {
       throw new ResponseStatusException(
           HttpStatus.NOT_FOUND,
-          "Không tìm thấy quán ăn");
+          "Không tìm thấy dịch vụ");
     }
 
     return hinhAnhQuanRepository
-        .findByQuanAn_IdOrderByThuTuAscIdAsc(dichVuId)
+        .findByDichVu_IdOrderByThuTuAscIdAsc(dichVuId)
         .stream()
         .map(DichVuHinhAnhResponseDTO::fromEntity)
         .toList();

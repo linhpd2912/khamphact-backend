@@ -46,4 +46,7 @@ public interface HinhAnhQuanRepository extends JpaRepository<HinhAnhQuan, Long> 
 
   // Kiểm tra dịch vụ có ảnh đại diện hay chưa
   boolean existsByDichVu_IdAndAnhDaiDienTrue(Long dichVuId);
+
+  // Lấy tất cả ảnh thuộc dịch vụ, không lấy ảnh quán ăn
+  List<HinhAnhQuan> findAllByDichVuIsNotNullOrderByThuTuAscIdAsc();
 }
