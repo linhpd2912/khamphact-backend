@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import anuong.cantho.backend.dto.dichvu.dichvugmc.DichVuGioMoCuaRequestDTO;
+import anuong.cantho.backend.dto.dichvu.dichvugmc.DichVuGioMoCuaResponseDTO;
 import anuong.cantho.backend.dto.quanan.giomocua.GioMoCuaRequestDTO;
 import anuong.cantho.backend.dto.quanan.giomocua.GioMoCuaResponseDTO;
 import anuong.cantho.backend.service.quanan.GioMoCuaService;
@@ -30,12 +32,19 @@ public class GioMoCuaController {
 
   private final GioMoCuaService gioMoCuaService;
 
-  // GET: Lấy tất cả giờ mở cửa.
+  // GET: Lấy tất cả giờ mở cửa quan
   @GetMapping
   public ResponseEntity<List<GioMoCuaResponseDTO>> layTatCa() {
 
     return ResponseEntity.ok(
         gioMoCuaService.layTatCa());
+  }
+
+  // GET lay tat ca gmc dich vu
+  @GetMapping("/all-dv")
+  public ResponseEntity<List<DichVuGioMoCuaResponseDTO>> layTatCaDichVu() {
+    return ResponseEntity.ok(
+        gioMoCuaService.layTatCaDichVu());
   }
 
   // GET: Lấy giờ mở cửa của một quán.
@@ -47,6 +56,15 @@ public class GioMoCuaController {
         gioMoCuaService.layTheoQuanAn(quanAnId));
   }
 
+  // get lay gmc cua mot dich vu
+  @GetMapping("/dich-vu/{dichvuId}")
+  public ResponseEntity<List<DichVuGioMoCuaResponseDTO>> layTheoDichVu(
+      @PathVariable Long dichVuId) {
+
+    return ResponseEntity.ok(
+        gioMoCuaService.layTheoDichVu(dichVuId));
+  }
+
   // GET: Lấy một bản ghi theo ID.
   @GetMapping("/{id}")
   public ResponseEntity<GioMoCuaResponseDTO> layTheoId(
@@ -54,6 +72,15 @@ public class GioMoCuaController {
 
     return ResponseEntity.ok(
         gioMoCuaService.layTheoId(id));
+  }
+
+  // GET: Lấy một bản ghi theo ID dich vu
+  @GetMapping("/dich-vu/chi-tiet/{id}")
+  public ResponseEntity<DichVuGioMoCuaResponseDTO> layTheoIdDichVu(
+      @PathVariable Long id) {
+
+    return ResponseEntity.ok(
+        gioMoCuaService.layTheoIdDichVu(id));
   }
 
   // GET: Lấy một bản ghi theo ID và ID quán.
@@ -66,12 +93,34 @@ public class GioMoCuaController {
         gioMoCuaService.layTheoIdVaQuanAn(id, quanAnId));
   }
 
+  // GET: Lấy một bản ghi theo ID và ID dv.
+  @GetMapping("/{id}/dich-vu/{dichVuId}")
+  public ResponseEntity<DichVuGioMoCuaResponseDTO> layTheoIdVaDichVu(
+      @PathVariable Long id,
+      @PathVariable Long dichVuId) {
+
+    return ResponseEntity.ok(
+        gioMoCuaService.layTheoIdVaDichVu(id, dichVuId));
+  }
+
   // POST: Thêm giờ mở cửa.
   @PostMapping
   public ResponseEntity<GioMoCuaResponseDTO> them(
       @Valid @RequestBody GioMoCuaRequestDTO request) {
 
     GioMoCuaResponseDTO response = gioMoCuaService.them(request);
+
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .body(response);
+  }
+
+  // POST: Thêm giờ mở cửa dv
+  @PostMapping("/dich-vu")
+  public ResponseEntity<DichVuGioMoCuaResponseDTO> themDichVu(
+      @Valid @RequestBody DichVuGioMoCuaRequestDTO request) {
+
+    DichVuGioMoCuaResponseDTO response = gioMoCuaService.themDichVu(request);
 
     return ResponseEntity
         .status(HttpStatus.CREATED)
@@ -88,12 +137,32 @@ public class GioMoCuaController {
         gioMoCuaService.capNhat(id, request));
   }
 
+  // PUT: Cập nhật giờ mở cửa dv
+  @PutMapping("/dich-vu/{id}")
+  public ResponseEntity<DichVuGioMoCuaResponseDTO> capNhatDichVu(
+      @PathVariable Long id,
+      @Valid @RequestBody DichVuGioMoCuaRequestDTO request) {
+
+    return ResponseEntity.ok(
+        gioMoCuaService.capNhatDichVu(id, request));
+  }
+
   // DELETE: Xóa một bản ghi giờ mở cửa.
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> xoa(
       @PathVariable Long id) {
 
     gioMoCuaService.xoa(id);
+
+    return ResponseEntity.noContent().build();
+  }
+
+  // DELETE: Xóa một bản ghi giờ mở cửa.
+  @DeleteMapping("/dich-vu/{id}")
+  public ResponseEntity<Void> xoaDichVu(
+      @PathVariable Long id) {
+
+    gioMoCuaService.xoaDichVu(id);
 
     return ResponseEntity.noContent().build();
   }

@@ -9,9 +9,11 @@ import lombok.*;
 
 @Entity
 @Table(name = "gio_mo_cua", uniqueConstraints = {
-    @UniqueConstraint(name = "uk_gio_mo_cua_quan_thu", columnNames = { "quan_an_id", "thu" })
+    @UniqueConstraint(name = "uk_gio_mo_cua_quan_thu", columnNames = { "quan_an_id", "thu" }),
+    @UniqueConstraint(name = "uk_gio_mo_cua_dich_vu_thu", columnNames = { "dich_vu_id", "thu" })
 }, indexes = {
-    @Index(name = "idx_gio_mo_cua_quan", columnList = "quan_an_id")
+    @Index(name = "idx_gio_mo_cua_quan", columnList = "quan_an_id"),
+    @Index(name = "idx_gio_mo_cua_dich_vu", columnList = "dich_vu_id")
 })
 @NoArgsConstructor
 @Getter
@@ -24,12 +26,12 @@ public class GioMoCua {
 
   // Liên kết với quán ăn
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "quan_an_id")
+  @JoinColumn(name = "quan_an_id", nullable = true)
   private QuanAn quanAn;
 
   // Liên kết với dịch vụ
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "dich_vu_id")
+  @JoinColumn(name = "dich_vu_id", nullable = true)
   private DichVu dichVu;
 
   @NotNull(message = "Vui lòng chọn thứ trong tuần")
