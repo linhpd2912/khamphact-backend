@@ -57,7 +57,7 @@ public class GioMoCuaController {
   }
 
   // get lay gmc cua mot dich vu
-  @GetMapping("/dich-vu/{dichvuId}")
+  @GetMapping("/dich-vu/{dichVuId}")
   public ResponseEntity<List<DichVuGioMoCuaResponseDTO>> layTheoDichVu(
       @PathVariable Long dichVuId) {
 
