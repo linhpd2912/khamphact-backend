@@ -1,4 +1,4 @@
-package anuong.cantho.backend.service.dichvu;
+package anuong.cantho.backend.service.dichvu.danhmucdv;
 
 import java.text.Normalizer;
 import java.util.List;
