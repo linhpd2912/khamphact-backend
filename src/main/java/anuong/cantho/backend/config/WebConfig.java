@@ -36,7 +36,7 @@ public class WebConfig implements WebMvcConfigurer {
         public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
                                 .allowedOrigins(
-                                                "https://khamphadiadiemcantho.netlify.app/", // domain Netlify của bạn
+                                                "https://khamphadiadiemcantho.netlify.app", // domain Netlify của bạn
                                                 "http://localhost:5173" // để dev local vẫn gọi được
                                 )
                                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
