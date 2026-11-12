@@ -25,15 +25,15 @@ public class HinhAnhQuan {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-     // Liên kết quán ăn
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quan_an_id")
-    private QuanAn quanAn;
+  // Liên kết quán ăn
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "quan_an_id", nullable = true)
+  private QuanAn quanAn;
 
-    // Liên kết dịch vụ
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dich_vu_id")
-    private DichVu dichVu;
+  // Liên kết dịch vụ
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "dich_vu_id", nullable = true)
+  private DichVu dichVu;
 
   @NotBlank(message = "URL ảnh không được để trống")
   @Size(max = 2048)
