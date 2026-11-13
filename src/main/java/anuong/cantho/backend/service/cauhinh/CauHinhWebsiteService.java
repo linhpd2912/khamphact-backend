@@ -348,10 +348,17 @@ public class CauHinhWebsiteService {
           "Tên file không hợp lệ");
     }
 
-    String fileName = Paths.get(originalName)
-        .getFileName()
-        .toString();
+    // Chuẩn hóa đường dẫn tên file từ Windows hoặc Linux
+    String fileName = originalName.replace('\\', '/');
 
+    // Chỉ lấy tên file cuối cùng
+    int lastSeparator = fileName.lastIndexOf('/');
+
+    if (lastSeparator >= 0) {
+      fileName = fileName.substring(lastSeparator + 1);
+    }
+
+    // Lấy phần mở rộng
     int lastDot = fileName.lastIndexOf(".");
 
     if (lastDot < 0) {
@@ -362,7 +369,8 @@ public class CauHinhWebsiteService {
 
     String extension = fileName
         .substring(lastDot)
-        .toLowerCase();
+        .toLowerCase(java.util.Locale.ROOT);
+
 
     if (!EXTENSIONS.contains(extension) ||
         extension.equals(".ico")) {
