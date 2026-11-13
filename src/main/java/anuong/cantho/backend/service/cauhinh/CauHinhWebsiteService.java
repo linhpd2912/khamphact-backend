@@ -18,7 +18,9 @@ import anuong.cantho.backend.dto.cauhinh.CauHinhWebsiteResponseDTO;
 import anuong.cantho.backend.entity.cauhinh.CauHinhWebsite;
 import anuong.cantho.backend.repository.cauhinh.CauHinhWebsiteRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CauHinhWebsiteService {
@@ -392,9 +394,15 @@ public class CauHinhWebsiteService {
 
     } catch (IOException e) {
 
+      log.error(
+          "LỖI LƯU BANNER - Đường dẫn: {}",
+          bannerUploadDir,
+          e);
+
       throw new ResponseStatusException(
           HttpStatus.INTERNAL_SERVER_ERROR,
-          "Không thể lưu hình ảnh banner");
+          "Không thể lưu hình ảnh banner: " + e.getMessage(),
+          e);
     }
   }
 
@@ -473,54 +481,54 @@ public class CauHinhWebsiteService {
   // ==========================================
 
   // ==========================================
-// CHUYỂN ENTITY SANG RESPONSE DTO
-// ==========================================
+  // CHUYỂN ENTITY SANG RESPONSE DTO
+  // ==========================================
 
-private CauHinhWebsiteResponseDTO chuyenDoiResponse(
-    CauHinhWebsite c) {
+  private CauHinhWebsiteResponseDTO chuyenDoiResponse(
+      CauHinhWebsite c) {
 
-  return new CauHinhWebsiteResponseDTO(
+    return new CauHinhWebsiteResponseDTO(
 
-      c.getId(),
+        c.getId(),
 
-      // Thương hiệu
-      c.getTenWebsite(),
-      c.getSlogan(),
-      c.getLogo(),
-      c.getFavicon(),
+        // Thương hiệu
+        c.getTenWebsite(),
+        c.getSlogan(),
+        c.getLogo(),
+        c.getFavicon(),
 
-      // Banner trang chủ
-      c.getBannerTrangChu(),
-      c.getBannerAlt(),
-      c.getBannerTieuDe(),
-      c.getBannerMoTa(),
-      c.getBannerLink(),
-      c.getHienThiBanner(),
+        // Banner trang chủ
+        c.getBannerTrangChu(),
+        c.getBannerAlt(),
+        c.getBannerTieuDe(),
+        c.getBannerMoTa(),
+        c.getBannerLink(),
+        c.getHienThiBanner(),
 
-      // Liên hệ
-      c.getEmail(),
-      c.getSoDienThoai(),
-      c.getDiaChi(),
+        // Liên hệ
+        c.getEmail(),
+        c.getSoDienThoai(),
+        c.getDiaChi(),
 
-      // Mạng xã hội
-      c.getFacebook(),
-      c.getZalo(),
-      c.getYoutube(),
-      c.getInstagram(),
-      c.getTiktok(),
+        // Mạng xã hội
+        c.getFacebook(),
+        c.getZalo(),
+        c.getYoutube(),
+        c.getInstagram(),
+        c.getTiktok(),
 
-      // Theo dõi
-      c.getMaGoogleAnalytics(),
-      c.getMaGoogleSearchConsole(),
-      c.getMaFacebookPixel(),
+        // Theo dõi
+        c.getMaGoogleAnalytics(),
+        c.getMaGoogleSearchConsole(),
+        c.getMaFacebookPixel(),
 
-      // SEO
-      c.getTieuDeSeoTrangChu(),
-      c.getMoTaSeoTrangChu(),
-      c.getTuKhoaSeoTrangChu(),
+        // SEO
+        c.getTieuDeSeoTrangChu(),
+        c.getMoTaSeoTrangChu(),
+        c.getTuKhoaSeoTrangChu(),
 
-      // Footer
-      c.getChanTrangWebsite());
-}
+        // Footer
+        c.getChanTrangWebsite());
+  }
 
 }
