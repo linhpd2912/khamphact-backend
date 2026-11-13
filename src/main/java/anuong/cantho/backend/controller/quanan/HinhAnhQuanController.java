@@ -73,7 +73,7 @@ public class HinhAnhQuanController {
   // Content-Type: multipart/form-data
   @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<List<HinhAnhQuanResponseDTO>> taiLen(
-      @RequestParam Long quanAnId,
+      @RequestParam("quanAnId") Long quanAnId,
       @RequestParam("files") MultipartFile[] files,
       @RequestParam(required = false) String chuThich) {
 
@@ -89,7 +89,7 @@ public class HinhAnhQuanController {
 
   @PostMapping(value = "/upload/dich-vu", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<List<DichVuHinhAnhResponseDTO>> taiLenAnhDichVu(
-      @RequestParam Long dichVuId,
+      @RequestParam("dichVuId") Long dichVuId,
       @RequestParam("files") MultipartFile[] files,
       @RequestParam(required = false) String chuThich) {
 
