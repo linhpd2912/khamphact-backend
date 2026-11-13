@@ -71,7 +71,7 @@ public class HinhAnhQuanController {
   // ======================================
   // POST /api/hinh-anh-quan/upload?quanAnId=1
   // Content-Type: multipart/form-data
-  @PostMapping(value = "/upload/dich-vu", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<List<HinhAnhQuanResponseDTO>> taiLen(
       @RequestParam Long quanAnId,
       @RequestParam("files") MultipartFile[] files,
@@ -87,7 +87,7 @@ public class HinhAnhQuanController {
         .body(ketQua);
   }
 
-  @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/upload/dich-vu", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<List<DichVuHinhAnhResponseDTO>> taiLenAnhDichVu(
       @RequestParam Long dichVuId,
       @RequestParam("files") MultipartFile[] files,
