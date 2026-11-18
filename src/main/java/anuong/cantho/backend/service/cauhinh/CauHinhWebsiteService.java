@@ -104,16 +104,41 @@ public class CauHinhWebsiteService {
     cauHinh.setInstagram(request.getInstagram());
     cauHinh.setTiktok(request.getTiktok());
 
-    // Theo dõi
+    // ==========================================
+    // GOOGLE ANALYTICS
+    // ==========================================
+
     cauHinh.setMaGoogleAnalytics(
         request.getMaGoogleAnalytics());
+
+    if (request.getBatGoogleAnalytics() != null) {
+      cauHinh.setBatGoogleAnalytics(
+          request.getBatGoogleAnalytics());
+    }
+
+    // ==========================================
+    // GOOGLE SEARCH CONSOLE
+    // ==========================================
 
     cauHinh.setMaGoogleSearchConsole(
         request.getMaGoogleSearchConsole());
 
+    if (request.getBatGoogleSearchConsole() != null) {
+      cauHinh.setBatGoogleSearchConsole(
+          request.getBatGoogleSearchConsole());
+    }
+
+    // ==========================================
+    // FACEBOOK PIXEL
+    // ==========================================
+
     cauHinh.setMaFacebookPixel(
         request.getMaFacebookPixel());
 
+    if (request.getBatFacebookPixel() != null) {
+      cauHinh.setBatFacebookPixel(
+          request.getBatFacebookPixel());
+    }
     // SEO
     cauHinh.setTieuDeSeoTrangChu(
         request.getTieuDeSeoTrangChu());
@@ -371,7 +396,6 @@ public class CauHinhWebsiteService {
         .substring(lastDot)
         .toLowerCase(java.util.Locale.ROOT);
 
-
     if (!EXTENSIONS.contains(extension) ||
         extension.equals(".ico")) {
 
@@ -525,10 +549,21 @@ public class CauHinhWebsiteService {
         c.getInstagram(),
         c.getTiktok(),
 
-        // Theo dõi
+        // ==========================================
+        // THEO DÕI WEBSITE
+        // ==========================================
+
+        // Google Analytics
         c.getMaGoogleAnalytics(),
+        c.getBatGoogleAnalytics(),
+
+        // Google Search Console
         c.getMaGoogleSearchConsole(),
+        c.getBatGoogleSearchConsole(),
+
+        // Facebook Pixel
         c.getMaFacebookPixel(),
+        c.getBatFacebookPixel(),
 
         // SEO
         c.getTieuDeSeoTrangChu(),

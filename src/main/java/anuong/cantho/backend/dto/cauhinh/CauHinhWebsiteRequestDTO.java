@@ -78,18 +78,34 @@ public class CauHinhWebsiteRequestDTO {
   @Size(max = 2048)
   private String tiktok;
 
-  // ==============================
+  // ==========================================
   // GOOGLE ANALYTICS
-  // ==============================
+  // ==========================================
 
+  @Pattern(regexp = "^$|^G-[A-Z0-9]+$", message = "Mã Google Analytics phải có dạng G-XXXXXXXXXX")
   @Size(max = 100)
   private String maGoogleAnalytics;
+
+  private Boolean batGoogleAnalytics;
+
+  // ==========================================
+  // GOOGLE SEARCH CONSOLE
+  // ==========================================
 
   @Size(max = 500)
   private String maGoogleSearchConsole;
 
+  private Boolean batGoogleSearchConsole;
+
+  // ==========================================
+  // FACEBOOK PIXEL
+  // ==========================================
+
+  @Pattern(regexp = "^$|^[0-9]{5,30}$", message = "Facebook Pixel ID phải là chuỗi số hợp lệ")
   @Size(max = 100)
   private String maFacebookPixel;
+
+  private Boolean batFacebookPixel;
 
   // ==============================
   // SEO TRANG CHỦ

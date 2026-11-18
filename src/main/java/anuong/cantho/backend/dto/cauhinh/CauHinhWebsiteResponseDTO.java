@@ -42,10 +42,21 @@ public class CauHinhWebsiteResponseDTO {
   private String instagram;
   private String tiktok;
 
-  // Theo dõi
+  // ==========================================
+  // THEO DÕI WEBSITE
+  // ==========================================
+
+  // Google Analytics
   private String maGoogleAnalytics;
+  private Boolean batGoogleAnalytics;
+
+  // Google Search Console
   private String maGoogleSearchConsole;
+  private Boolean batGoogleSearchConsole;
+
+  // Facebook Pixel
   private String maFacebookPixel;
+  private Boolean batFacebookPixel;
 
   // SEO
   private String tieuDeSeoTrangChu;

@@ -82,13 +82,22 @@ public class CauHinhWebsite {
   @Column(name = "ma_google_analytics", length = 100)
   private String maGoogleAnalytics;
 
+  @Column(name = "bat_google_analytics")
+  private Boolean batGoogleAnalytics = false;
+
   @Size(max = 500)
   @Column(name = "ma_google_search_console", length = 500)
   private String maGoogleSearchConsole;
 
+  @Column(name = "bat_google_search_console")
+  private Boolean batGoogleSearchConsole = false;
+
   @Size(max = 100)
   @Column(name = "ma_facebook_pixel", length = 100)
   private String maFacebookPixel;
+  
+  @Column(name = "bat_facebook_pixel")
+private Boolean batFacebookPixel = false;
 
   @Size(max = 255)
   @Column(name = "tieu_de_seo_trang_chu", length = 255)
